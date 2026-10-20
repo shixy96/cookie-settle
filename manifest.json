@@ -1,0 +1,23 @@
+{
+    "manifest_version": 3,
+    "name": "Cookie Settle · 功能走查助手",
+    "version": "1.1.1",
+    "description": "面向功能走查的 Cookie 工具，支持按环境批量设置、清理、实时检查与配置导入导出。",
+    "minimum_chrome_version": "120",
+    "permissions": ["cookies", "storage"],
+    "host_permissions": ["http://pan.baidu.com/*", "https://pan.baidu.com/*", "https://baidu.com/*"],
+    "incognito": "not_allowed",
+    "action": {
+        "default_title": "Cookie Settle · 功能走查助手",
+        "default_popup": "popup.html",
+        "default_icon": { "16": "icons/16.png", "32": "icons/32.png" }
+    },
+    "icons": {
+        "16": "icons/16.png",
+        "32": "icons/32.png",
+        "48": "icons/48.png",
+        "128": "icons/128.png"
+    },
+    "background": { "service_worker": "background.js", "type": "module" },
+    "options_ui": { "page": "popup.html?view=tab", "open_in_tab": true }
+}

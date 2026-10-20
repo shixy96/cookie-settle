@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cookie Settle · 功能走查助手</title>
+    <link rel="stylesheet" href="popup.css">
+    <script type="module" src="popup.js"></script>
+</head>
+<body>
+    <div class="message-layer" role="status" aria-live="polite" aria-atomic="true">
+        <div id="notice" class="notice" hidden></div>
+    </div>
+    <main class="workspace">
+        <header class="masthead">
+            <div class="brand">
+                <img class="brand-mark" src="icons/32.png" width="28" height="28" alt="">
+                <div class="brand-copy">
+                    <h1>Cookie Settle</h1>
+                    <div class="site-meta" role="group" aria-label="当前操作范围">
+                        <span class="site-address">加载站点…</span>
+                        <span id="counts" class="scope-count">读取配置中</span>
+                    </div>
+                </div>
+            </div>
+            <button id="expand" class="quiet compact" title="在独立标签页打开">
+                <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M11 3h6v6M17 3l-8 8M7 4H4v12h12v-3"/></svg>
+                展开
+            </button>
+        </header>
+
+        <aside id="conflicts" class="warning" aria-label="Cookie 冲突提示" hidden></aside>
+
+        <div class="workbench">
+            <section class="environments" aria-labelledby="environments-title">
+                <div class="section-heading">
+                    <h2 id="environments-title">环境配置</h2>
+                    <div class="bulk-actions" aria-label="批量操作">
+                        <button id="apply-all" class="primary" disabled>
+                            <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="m8 4 7 6-7 6Z"/></svg>
+                            全部启用
+                        </button>
+                        <button id="clear-all" class="quiet clear-action" disabled>全部清理</button>
+                    </div>
+                </div>
+                <div id="groups" class="groups"><p class="loading">正在读取环境与实际 Cookie…</p></div>
+                <p class="environment-hint">
+                    <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M16 7a6.5 6.5 0 1 0 .3 5M16 3v4h-4"/></svg>
+                    设置或清理后，刷新业务页面生效。
+                </p>
+            </section>
+
+            <section class="inspection-panel" aria-label="实时检查">
+                <div class="inspection-heading">
+                    <div><h2>实时检查</h2><span id="checked-at">尚未检查</span></div>
+                    <button id="refresh-status" class="quiet compact">
+                        <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M16 7a6.5 6.5 0 1 0 .3 5M16 3v4h-4"/></svg>
+                        检查状态
+                    </button>
+                </div>
+                <details id="live-inspection" class="live-inspection">
+                    <summary id="live-summary">实际 Cookie：等待检查</summary>
+                    <div class="inspection-content">
+                        <p class="inspection-help">包含页面手动设置的值。</p>
+                        <h2>已打开页面</h2>
+                        <div id="page-checks"></div>
+                        <details id="cookie-inventory">
+                            <summary id="inventory-summary">全部代理 Cookie</summary>
+                            <div id="inventory-list"></div>
+                        </details>
+                        <p class="inspection-footnote">按页面 URL 读取实际 Cookie，不验证代理服务是否可用。</p>
+                    </div>
+                </details>
+            </section>
+        </div>
+
+        <footer>
+            <nav class="footer-actions" aria-label="配置工具">
+                <button id="import" class="quiet">
+                    <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2v10m-4-4 4 4 4-4M3 12v5h14v-5"/></svg>
+                    导入配置
+                </button>
+                <button id="export" class="quiet" disabled>
+                    <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 12V2M6 6l4-4 4 4M3 12v5h14v-5"/></svg>
+                    导出配置
+                </button>
+                <button id="defaults" class="quiet">恢复默认</button>
+                <button id="reload-tabs" class="quiet">刷新站点页</button>
+            </nav>
+            <p class="privacy-note">
+                <svg class="icon" viewBox="0 0 20 20" aria-hidden="true"><path d="m10 2 6 2.5V9c0 4-3.5 7-6 8-2.5-1-6-4-6-8V4.5ZM7 9.5l2 2 4-4"/></svg>
+                仅在当前浏览器生效，保留登录 Cookie。
+            </p>
+        </footer>
+    </main>
+
+    <input id="import-file" type="file" accept=".json,application/json" hidden>
+    <dialog id="editor" aria-labelledby="editor-title" aria-describedby="editor-help">
+        <form id="edit-form">
+            <div class="dialog-heading">
+                <div><p class="dialog-context">环境设置</p><h2 id="editor-title">编辑环境</h2></div>
+                <button type="button" class="quiet close-button" data-close="editor" aria-label="关闭编辑">关闭</button>
+            </div>
+            <p id="editor-help" class="muted">保存后，点击“启用”将新配置写入 Cookie。</p>
+            <div class="form-grid">
+                <label class="wide-field">环境名称<input id="edit-name" required maxlength="60" autocomplete="off"></label>
+                <label class="wide-field">代理地址<input id="edit-proxy" type="url" required spellcheck="false" autocomplete="off" placeholder="http://主机:端口"></label>
+                <label class="wide-field">容器 ID<textarea id="edit-container" rows="2" required maxlength="512" spellcheck="false"></textarea></label>
+                <label>生效路径 <span class="muted">每行一个</span><textarea id="edit-paths" rows="4" required spellcheck="false"></textarea></label>
+                <label>备注<textarea id="edit-note" rows="4" maxlength="300" placeholder="方便识别的机器或用途"></textarea></label>
+            </div>
+            <p id="edit-error" class="form-error" role="alert" hidden></p>
+            <div class="dialog-actions"><button type="button" class="quiet" data-close="editor">取消</button><button type="submit" class="primary">保存配置</button></div>
+        </form>
+    </dialog>
+    <dialog id="confirm" aria-labelledby="confirm-title">
+        <div class="dialog-heading"><h2 id="confirm-title">导入配置</h2></div>
+        <p id="confirm-description"></p>
+        <ul id="confirm-groups"></ul>
+        <p class="muted">只替换环境配置，不修改 Cookie。旧路径仍可通过“全部清理”移除。</p>
+        <p id="confirm-error" class="form-error" role="alert" hidden></p>
+        <div class="dialog-actions"><button class="quiet" data-close="confirm">取消</button><button id="confirm-save" class="primary">确认替换</button></div>
+    </dialog>
+</body>
+</html>

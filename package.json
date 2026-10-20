@@ -1,0 +1,20 @@
+{
+    "name": "cookie-settle",
+    "version": "1.1.1",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "node scripts/build.mjs",
+        "test": "npm run test:all",
+        "test:unit": "node --test tests/*.test.mjs",
+        "test:browser": "node --test --test-concurrency=1 tests/*.browser.mjs tests/browser.mjs tests/manual-browser.mjs",
+        "test:all": "npm run test:unit && npm run test:browser",
+        "browser:install": "playwright install chromium"
+    },
+    "engines": {
+        "node": ">=22"
+    },
+    "devDependencies": {
+        "playwright": "1.62.1"
+    }
+}

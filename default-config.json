@@ -1,0 +1,40 @@
+{
+    "version": 1,
+    "host": "pan.baidu.com",
+    "groups": [
+        {
+            "id": "enterprise",
+            "name": "企业盘与预览",
+            "note": "首页机器",
+            "container": "0.opera-70849400-SceneEnterpriseNodeServer-000-all.TOOS.yq01f",
+            "proxy": "http://yq01-sys-rpm-ps10774.yq01.baidu.com:8075",
+            "paths": [
+                "/disk/cert",
+                "/buy/workspace",
+                "/disk/enterprise",
+                "/disk/cospace"
+            ]
+        },
+        {
+            "id": "cospace",
+            "name": "团队空间主页",
+            "note": "主端备用机器",
+            "container": "0.opera-92763500-netdiskNode1-000-nj.TOOS.njjs",
+            "proxy": "http://njjs-acg-tge269accb5.njjs.baidu.com:8011",
+            "paths": [
+                "/disk/main"
+            ]
+        },
+        {
+            "id": "share",
+            "name": "分享外链",
+            "note": "外链机器",
+            "container": "0.opera-72561500-SceneShareNode-000-all.TOOS.yq01f",
+            "proxy": "http://yq01-sys-rpm-ps10776.yq01.baidu.com:8112",
+            "paths": [
+                "/e/",
+                "/c/"
+            ]
+        }
+    ]
+}
